@@ -1,0 +1,1 @@
+COMMENT ON TABLE public.waitlist_rate_limit IS 'Salted-IP-hash log used only by the waitlist server function for rate limiting; service_role access only.';
