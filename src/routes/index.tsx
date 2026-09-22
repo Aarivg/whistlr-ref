@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Whistlr connects youth and rec sports leagues with certified referees. Leagues get coverage, officials get flexible games and fast pay.",
+          "Whistlr connects youth and rec soccer leagues with certified soccer referees. Leagues get coverage, officials get flexible games and fast pay.",
       },
       {
         property: "og:title",
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Post open games, match with available officials, and pay quickly after the game. Join the Whistlr waitlist.",
+          "Post open soccer games, match with available officials, and pay quickly after the game. Join the Whistlr waitlist.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -53,13 +53,13 @@ function Section({
 }
 
 const leagueSteps = [
-  { icon: CalendarPlus, title: "Post a game", body: "Date, time, location, sport, and what you pay." },
+  { icon: CalendarPlus, title: "Post a game", body: "Date, time, field, age group, and what you pay." },
   { icon: Users, title: "Get matched with available refs", body: "Officials nearby claim the games they can cover." },
   { icon: CreditCard, title: "Pay when the game is confirmed", body: "No chasing invoices or cutting checks weeks later." },
 ];
 
 const refSteps = [
-  { icon: Search, title: "Browse open games near you", body: "See sport, level, location, and pay up front." },
+  { icon: Search, title: "Browse open games near you", body: "See age group, level, field, and pay up front." },
   { icon: Hand, title: "Claim what fits your schedule", body: "Take the games you want. No assignor bottleneck." },
   { icon: Wallet, title: "Get paid fast after the game", body: "Payment releases once the game is confirmed." },
 ];
@@ -67,7 +67,7 @@ const refSteps = [
 const faqs = [
   {
     q: "What sports and regions do you support right now?",
-    a: "We're starting in Virginia across soccer, basketball, baseball, softball, and flag football. We'll expand based on where interest comes from.",
+    a: "Soccer only, starting in Virginia. We'd rather do one sport well first, and we'll expand based on where interest comes from.",
   },
   { q: "Is it free for referees?", a: "Yes. Referees never pay to browse or claim games." },
   {
@@ -113,8 +113,8 @@ function Index() {
               <br className="hidden sm:block" /> Get paid fast.
             </h1>
             <p className="mt-6 max-w-lg text-lg text-muted-foreground">
-              Whistlr is where rec and youth leagues post open games and certified
-              officials claim the ones that fit — leagues get coverage, referees get
+              Whistlr is where rec and youth soccer leagues post open games and certified
+              soccer officials claim the ones that fit — leagues get coverage, referees get
               flexibility and payment days after the whistle, not weeks.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -134,7 +134,7 @@ function Index() {
           </div>
           <img
             src={heroArt}
-            alt="Abstract illustration of a soccer ball, basketball, and referee whistle"
+            alt="Abstract illustration of a soccer ball, referee whistle, and corner flag"
             width={1200}
             height={1008}
             className="mx-auto w-full max-w-md"
@@ -203,7 +203,7 @@ function Index() {
           {[
             ["No more spreadsheets and group texts", "One place to post games and see who's covering what."],
             ["Payment that doesn't take weeks", "Funds are held until the game is confirmed, then released."],
-            ["Built for rec and independent leagues", "Not just large sanctioned programs with a dedicated assignor."],
+            ["Built for rec and independent leagues", "Not just large sanctioned soccer programs with a dedicated assignor."],
           ].map(([title, body]) => (
             <div key={title} className="rounded-2xl bg-background p-6">
               <h3 className="text-base font-semibold text-primary">{title}</h3>
