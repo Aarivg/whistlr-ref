@@ -8,6 +8,13 @@
       "when": 1790103926448,
       "tag": "0000_create_waitlist_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790200000000,
+      "tag": "0001_harden_waitlist_security",
+      "breakpoints": true
     }
   ]
 }

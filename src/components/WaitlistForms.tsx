@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { submitWaitlist } from "@/server-fns/waitlist";
 
 type Mode = "league" | "referee";
 
@@ -8,13 +8,7 @@ const fieldClass =
 
 const labelClass = "block text-sm font-medium text-foreground mb-1.5";
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className={labelClass}>{label}</span>
@@ -29,6 +23,13 @@ export function WaitlistForms({ initialMode = "league" }: { initialMode?: Mode }
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Reset whenever the visible form changes (mode switch or remount) so a
+  // bot that pre-loads the page can't "bank" time from an earlier view.
+  const formRenderedAtRef = useRef(Date.now());
+  useEffect(() => {
+    formRenderedAtRef.current = Date.now();
+  }, [mode]);
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -37,27 +38,37 @@ export function WaitlistForms({ initialMode = "league" }: { initialMode?: Mode }
     const get = (k: string) => String(form.get(k) ?? "").trim();
 
     try {
-      if (mode === "league") {
-        const { error } = await supabase.from("league_signups").insert({
-          name: get("name"),
-          org_name: get("org_name"),
-          email: get("email"),
-          region: get("region"),
-          games_per_season: get("games_per_season") || null,
-        });
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("referee_signups").insert({
-          name: get("name"),
-          email: get("email"),
-          region: get("region"),
-          sports: "Soccer",
-          years_experience: get("years_experience") || null,
-        });
-        if (error) throw error;
+      const result = await submitWaitlist({
+        data:
+          mode === "league"
+            ? {
+                mode: "league",
+                name: get("name"),
+                orgName: get("org_name"),
+                email: get("email"),
+                region: get("region"),
+                gamesPerSeason: get("games_per_season"),
+                website: get("website"),
+                formRenderedAt: formRenderedAtRef.current,
+              }
+            : {
+                mode: "referee",
+                name: get("name"),
+                email: get("email"),
+                region: get("region"),
+                yearsExperience: get("years_experience"),
+                website: get("website"),
+                formRenderedAt: formRenderedAtRef.current,
+              },
+      });
+
+      if (!result.ok) {
+        setError(result.error);
+        return;
       }
       setDone(mode);
-    } catch {
+    } catch (err) {
+      console.error(err);
       setError("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
@@ -98,31 +109,76 @@ export function WaitlistForms({ initialMode = "league" }: { initialMode?: Mode }
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4" key={mode}>
+          {/* Honeypot: hidden from real visitors, but a bot that fills every
+              field on the page will fill this too. Never remove the name
+              "website" without updating src/server-fns/waitlist.ts. */}
+          <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }} aria-hidden="true">
+            <label>
+              Leave this field blank
+              <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+
           <Field label="Your name">
-            <input name="name" required maxLength={100} className={fieldClass} placeholder="Jordan Reese" />
+            <input
+              name="name"
+              required
+              maxLength={100}
+              className={fieldClass}
+              placeholder="Jordan Reese"
+            />
           </Field>
 
           {mode === "league" && (
             <Field label="Organization name">
-              <input name="org_name" required maxLength={120} className={fieldClass} placeholder="Richmond Youth Soccer" />
+              <input
+                name="org_name"
+                required
+                maxLength={120}
+                className={fieldClass}
+                placeholder="Richmond Youth Soccer"
+              />
             </Field>
           )}
 
           <Field label="Email">
-            <input type="email" name="email" required maxLength={255} className={fieldClass} placeholder="you@example.com" />
+            <input
+              type="email"
+              name="email"
+              required
+              maxLength={255}
+              className={fieldClass}
+              placeholder="you@example.com"
+            />
           </Field>
 
           <Field label="City / region">
-            <input name="region" required maxLength={120} className={fieldClass} placeholder="Richmond, VA" />
+            <input
+              name="region"
+              required
+              maxLength={120}
+              className={fieldClass}
+              placeholder="Richmond, VA"
+            />
           </Field>
 
           {mode === "league" ? (
             <Field label="Rough number of games per season">
-              <input name="games_per_season" maxLength={50} className={fieldClass} placeholder="~120" />
+              <input
+                name="games_per_season"
+                maxLength={50}
+                className={fieldClass}
+                placeholder="~120"
+              />
             </Field>
           ) : (
             <Field label="Years of experience officiating soccer">
-              <input name="years_experience" maxLength={50} className={fieldClass} placeholder="5" />
+              <input
+                name="years_experience"
+                maxLength={50}
+                className={fieldClass}
+                placeholder="5"
+              />
             </Field>
           )}
 
