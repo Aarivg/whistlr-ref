@@ -14,7 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      league_signups: {
+        Row: {
+          created_at: string
+          email: string
+          games_per_season: string | null
+          id: string
+          name: string
+          org_name: string
+          region: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          games_per_season?: string | null
+          id?: string
+          name: string
+          org_name: string
+          region: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          games_per_season?: string | null
+          id?: string
+          name?: string
+          org_name?: string
+          region?: string
+        }
+        Relationships: []
+      }
+      referee_signups: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          region: string
+          sports: string
+          years_experience: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          region: string
+          sports: string
+          years_experience?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          region?: string
+          sports?: string
+          years_experience?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
