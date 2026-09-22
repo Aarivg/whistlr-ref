@@ -51,7 +51,7 @@ export function WaitlistForms({ initialMode = "league" }: { initialMode?: Mode }
           name: get("name"),
           email: get("email"),
           region: get("region"),
-          sports: get("sports"),
+          sports: "Soccer",
           years_experience: get("years_experience") || null,
         });
         if (error) throw error;
@@ -121,14 +121,9 @@ export function WaitlistForms({ initialMode = "league" }: { initialMode?: Mode }
               <input name="games_per_season" maxLength={50} className={fieldClass} placeholder="~120" />
             </Field>
           ) : (
-            <>
-              <Field label="Sport(s) you officiate">
-                <input name="sports" required maxLength={150} className={fieldClass} placeholder="Soccer, basketball" />
-              </Field>
-              <Field label="Years of experience">
-                <input name="years_experience" maxLength={50} className={fieldClass} placeholder="5" />
-              </Field>
-            </>
+            <Field label="Years of experience officiating soccer">
+              <input name="years_experience" maxLength={50} className={fieldClass} placeholder="5" />
+            </Field>
           )}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
